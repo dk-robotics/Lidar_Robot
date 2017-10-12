@@ -4,6 +4,7 @@
 #define LIDAR_ADDR_DEFAULT 0x62
 
 #include <Arduino.h>
+#include <Wire.h>
 
 class Lidar
 {
