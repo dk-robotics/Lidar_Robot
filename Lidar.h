@@ -6,8 +6,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-class Lidar
-{
+class Lidar {
   public:
       Lidar();
       void begin(bool = true, char = LIDAR_ADDR_DEFAULT);
