@@ -1,0 +1,10 @@
+# CMake
+cmake-build-debug/
+cmake-build-release/
+build/
+
+# IDE Specific
+.idea/
+
+# OS Specific
+.DS_Store

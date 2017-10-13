@@ -1,11 +1,10 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <stdarg.h>
 #include "Lidar.h"
 
 char lidar = LIDAR_ADDR_DEFAULT;
 
-Lidar::Lidar(){}
+Lidar::Lidar() = default;
 
 void Lidar::begin(bool fasti2c, char lidarAddress) {
   lidar = lidarAddress;
@@ -24,7 +23,7 @@ void Lidar::begin(bool fasti2c, char lidarAddress) {
   write(0x1c,0x00); // Default
 }
 
-void Lidar::reset() {
+void Lidar::resetMotors() {
   write(0x00,0x00);
 }
 
