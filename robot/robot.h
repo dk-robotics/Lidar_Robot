@@ -1,6 +1,6 @@
 /**
- * This is the main entry file, and is either called by robot.ino, or robot.cpp
- * depending on whether CMake or Arduino IDE was used to build the project
+ * This is the main entry file, and is either called by robot.cpp, or robot.ino
+ * depending on whether CMake or Arduino IDE, respectively, was used to build the project
  */
 
 #ifndef LIDARROBOT_MAIN_H

@@ -6,14 +6,7 @@
 #ifndef LIDARROBOT_MOTOR_H
 #define LIDARROBOT_MOTOR_H
 
-#define MOTOR_RIGHT_FORWARD 7
-#define MOTOR_RIGHT_BACKWARDS 8
-
-#define MOTOR_LEFT_FORWARD 4
-#define MOTOR_LEFT_BACKWARDS 9
-
-#define MOTOR_SPEED_RIGHT 5
-#define MOTOR_SPEED_LEFT 6
+#include "PinSetup.h"
 
 class Motor {
 public:
@@ -24,6 +17,8 @@ public:
 
     void right(uint8_t speed, uint8_t turnRate);
     void left(uint8_t speed, uint8_t turnRate);
+
+    void degreeTurn(uint8_t speed, unsigned int degrees);
 };
 
 

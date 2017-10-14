@@ -57,3 +57,20 @@ void Motor::left(uint8_t speed, uint8_t turnRate) {
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
 }
+
+void Motor::degreeTurn(uint8_t speed, unsigned int degrees) {
+    if (degrees > 90) {
+        // move right
+
+        uint8_t turnRate = map(degrees, 90, 180, 0, 255);
+        right(speed, turnRate);
+    } else if (degrees < 90) {
+        // move left
+
+        uint8_t turnRate = map(degrees, 90, 0, 0, 255);
+        right(speed, turnRate);
+    } else {
+        // move forwards
+        forward(speed);
+    }
+}
