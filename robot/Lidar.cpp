@@ -26,9 +26,7 @@ void Lidar::resetLidar() {
     write(0x00, 0x00);
 }
 
-/**
-This method assumes that the Lidar is not busy!
-*/
+
 int Lidar::getDistance() {
     // Correlate each every 100th meassurement
     boolean biasCorrection = meassurementCounter++ % 100 == 0;
