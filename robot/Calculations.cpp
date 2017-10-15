@@ -4,11 +4,12 @@
 Calculations::Calculations()
         : distances(), servoStep(0), servoDirection(true) {
     servo.attach(SERVO_PIN);
+    lidar.begin();
 }
 
 void Calculations::loop() {
     // TODO implement this
-    // lidar.getDistance()
+    lidar.getDistance();
     moveServo();
 
     calculateMoveDirection();

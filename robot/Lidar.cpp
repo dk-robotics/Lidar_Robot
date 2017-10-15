@@ -3,6 +3,7 @@
 #include "Lidar.h"
 
 char lidar = LIDAR_ADDR_DEFAULT;
+char meassurementCounter = 0;
 
 Lidar::Lidar() = default;
 
@@ -17,62 +18,36 @@ void Lidar::begin(bool fasti2c, char lidarAddress) {
     #endif
   }
   
-  //Configuration : Short range, high speed + Interrupt on ready
+  //Configuration : Default range, higher speed short range
   write(0x02,0x80); // Default
-  write(0x04,0x01);
+  write(0x04,0x00); // Enable meassurement quick termination
   write(0x1c,0x00); // Default
 }
 
 void Lidar::resetMotors() {
-  write(0x00,0x00);
-}
-
-void Lidar::requestDistanceMeassurement(bool biasCorrection) {
-  if(biasCorrection) {
-    // Take acquisition & correlation processing with receiver bias correction
-    write(0x00,0x04);
-  } else {
-    // Take acquisition & correlation processing without receiver bias correction
-    write(0x00,0x03);
-  }
+  write(0x00,0x00); //Is this a mistake? This resets the Lidar, not any motors!
 }
 
 /**
 This method assumes that the Lidar is not busy!
 */
 int Lidar::getDistance() {
+  // Correlate each every 100th meassurement
+  boolean biasCorrection = meassurementCounter++ % 100 == 0;
+  if(biasCorrection) {
+    // Take acquisition & correlation processing with receiver bias correction
+    write(0x00,0x04,LIDARLITE_ADDR);
+  } else {
+    // Take acquisition & correlation processing without receiver bias correction
+    write(0x00,0x03,LIDARLITE_ADDR);
+  }
   // Array to store high and low bytes of distance
   byte distanceArray[2];
-  
-  //Testing code
-  Wire.beginTransmission((int)lidar);
-  Wire.write((int)0x8f); // Set the register to be read
-  
-  // A nack means the device is not responding, report the error over serial
-  int nackCatcher = Wire.endTransmission();
-  if(nackCatcher != 0) {
-    Serial.println("> nack");
-  }
-  
-  // Perform read of 1 or 2 bytes, save in arrayToSave
-  int numOfBytes = 2;
-  Wire.requestFrom((int)lidar, numOfBytes);
-  int i = 0;
-  if(numOfBytes <= Wire.available()) {
-    while(i < numOfBytes) {
-      distanceArray[i] = Wire.read();
-      i++;
-    }
-  }
-  //Testing end
-  
-  
   // Read two bytes from register 0x8f (autoincrement for reading 0x0f and 0x10)
-  //read(0x8f,2,distanceArray,true,lidarliteAddress);
+  read(0x8f,2,distanceArray,true,LIDARLITE_ADDR);
   // Shift high byte and add to low byte
-  
-  
   int distance = (distanceArray[0] << 8) + distanceArray[1];
+  
   return(distance);
 }
 
@@ -93,9 +68,7 @@ void write(char myAddress, char myValue) {
 }
 
 
-
-//Can probably be deleted
-void read(char myAddress, int numOfBytes, byte arrayToSave[2], bool monitorBusyFlag, char lidarliteAddress) {
+void read(char myAddress, int numOfBytes, byte arrayToSave[2], bool monitorBusyFlag) {
 
 /**********************************
 MY PSEUDO-CODE REPRESENTATION
@@ -138,6 +111,8 @@ if(bailout) {
 }
 
 **********************************/
+  
+  char lidarliteAddress = lidar;
   
   int busyFlag = 0; // busyFlag monitors when the device is done with a measurement
   if(monitorBusyFlag) {
