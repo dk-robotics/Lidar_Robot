@@ -2,39 +2,25 @@
 #include "Calculations.h"
 
 Calculations::Calculations()
-        : distances(), servoStep(0), servoDirection(true) {
+        : distances(), step(0), servoDirection(true) {
     servo.attach(SERVO_PIN);
     lidar.begin();
 }
 
 void Calculations::loop() {
-    // TODO implement this
-    lidar.getDistance();
+    this->step += servoDirection ? 1 : -1;
     moveServo();
 
+    getDistance();
     calculateMoveDirection();
-}
 
-void Calculations::moveServo() {
-    if (servoStep * 180 / MEASURE_POINTS >= 180) {
-        servoDirection = false;
-    } else if (servoStep <= 0) {
-        servoDirection = true;
-    }
-
-    if (servoDirection) {
-        servoStep += MEASURE_POINTS;
-    } else {
-        servoStep -= MEASURE_POINTS;
-    }
-
-    servo.write(servoStep * 180 / MEASURE_POINTS);
+    // Delay before next servo move
+    delay(1);
 }
 
 void Calculations::calculateMoveDirection() {
-    float shortestDistance = 0xffff;
-    // if no distance was found move forwards
-    unsigned int distanceIndex = MEASURE_POINTS / 2;
+    float shortestDistance = 0xffffff;
+    unsigned int distanceIndex = 0;
 
     for (unsigned int i = 0; i < MEASURE_POINTS; i++) {
         if (distances[i] < shortestDistance) {
@@ -44,4 +30,20 @@ void Calculations::calculateMoveDirection() {
     }
 
     motor.degreeTurn(127, (distanceIndex * 180) / MEASURE_POINTS);
+}
+
+void Calculations::moveServo() {
+    // Change direction of servo if max/min position is reached
+    if (this->step * 180 / MEASURE_POINTS >= 180) {
+        servoDirection = false;
+    } else if (this->step <= 0) {
+        servoDirection = true;
+    }
+
+    // Update servo position
+    servo.write(this->step * 180 / MEASURE_POINTS);
+}
+
+void Calculations::getDistance() {
+    distances[this->step] = lidar.getDistance();
 }

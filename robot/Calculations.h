@@ -16,6 +16,7 @@ public:
 private:
     void moveServo();
     void calculateMoveDirection();
+    void getDistance();
 
     Lidar lidar;
     Motor motor;
@@ -23,7 +24,7 @@ private:
 
     float distances[MEASURE_POINTS];
     Servo servo;
-    int servoStep;
+    int step;
     // true = right, false = left
     boolean servoDirection;
 };
