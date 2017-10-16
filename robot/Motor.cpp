@@ -68,7 +68,7 @@ void Motor::degreeTurn(uint8_t speed, unsigned int degrees) {
         // move left
 
         uint8_t turnRate = map(degrees, 90, 0, 0, 255);
-        right(speed, turnRate);
+        left(speed, turnRate);
     } else {
         // move forwards
         forward(speed);
