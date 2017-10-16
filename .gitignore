@@ -8,3 +8,4 @@ build/
 
 # OS Specific
 .DS_Store
+.directory
