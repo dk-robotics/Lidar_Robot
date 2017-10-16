@@ -5,6 +5,8 @@
 #ifndef LIDARROBOT_PINSETUP_H
 #define LIDARROBOT_PINSETUP_H
 
+#include <Arduino.h>
+
 // Motor pins
 #define MOTOR_RIGHT_FORWARD 7
 #define MOTOR_RIGHT_BACKWARDS 8
@@ -17,5 +19,9 @@
 
 // Servo
 #define SERVO_PIN 10
+
+// Lidar
+#define SDA A4
+#define SCL A5
 
 #endif //LIDARROBOT_PINSETUP_H
