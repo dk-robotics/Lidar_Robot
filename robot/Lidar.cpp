@@ -4,6 +4,11 @@
 
 char meassurementCounter = 0;
 
+/****
+SDA - blue wire  - A4
+SCL - green wire - A5
+****/
+
 Lidar::Lidar(char lidarAddress) : address(lidarAddress) {}
 
 void Lidar::begin(bool fasti2c) {
