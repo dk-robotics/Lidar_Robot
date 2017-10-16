@@ -8,15 +8,15 @@ Calculations::Calculations()
 }
 
 void Calculations::loop() {
-    Serial.print("Loop starting");
+    Serial.println("Loop starting");
     this->step += servoDirection ? 1 : -1;
     moveServo();
 
-    getDistance();
-    calculateMoveDirection();
+    //getDistance();
+    //calculateMoveDirection();
 
     // Delay before next servo move
-    delay(1);
+    //delay(1);
 }
 
 void Calculations::calculateMoveDirection() {
@@ -34,7 +34,7 @@ void Calculations::calculateMoveDirection() {
 }
 
 void Calculations::moveServo() {
-    Serial.print("Moving servo");
+    Serial.println("Moving servo");
     // Change direction of servo if max/min position is reached
     if (this->step * 180 / MEASURE_POINTS >= 180) {
         servoDirection = false;
