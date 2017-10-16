@@ -34,7 +34,8 @@ void Calculations::calculateMoveDirection() {
         }
     }
 
-    motor.degreeTurn(60, distanceIndex*180 / ((float)MEASURE_POINTS));
+    //motor.degreeTurn(60, distanceIndex*180 / ((float)MEASURE_POINTS));
+    motor.degreeTurn(60, 180);
     //motor.forward(127);
 }
 
