@@ -42,7 +42,7 @@ void Motor::right(uint8_t speed, uint8_t turnRate) {
     resetMotors();
 
     analogWrite(MOTOR_SPEED_RIGHT, speed);
-    analogWrite(MOTOR_SPEED_LEFT, speed - turnRate/0xff * speed);
+    analogWrite(MOTOR_SPEED_LEFT, (speed - (turnRate * speed)/0xff));
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
@@ -52,7 +52,7 @@ void Motor::left(uint8_t speed, uint8_t turnRate) {
     resetMotors();
 
     analogWrite(MOTOR_SPEED_LEFT, speed);
-    analogWrite(MOTOR_SPEED_RIGHT, speed - turnRate/0xff * speed);
+    analogWrite(MOTOR_SPEED_RIGHT, (speed - (turnRate * speed)/0xff));
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);

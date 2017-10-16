@@ -8,14 +8,14 @@
 #include <Arduino.h>
 
 // Motor pins
-#define MOTOR_RIGHT_FORWARD 7
-#define MOTOR_RIGHT_BACKWARDS 8
+#define MOTOR_RIGHT_FORWARD 8
+#define MOTOR_RIGHT_BACKWARDS 7
 
-#define MOTOR_LEFT_FORWARD 4
-#define MOTOR_LEFT_BACKWARDS 9
+#define MOTOR_LEFT_FORWARD 9
+#define MOTOR_LEFT_BACKWARDS 4
 
-#define MOTOR_SPEED_RIGHT 5
-#define MOTOR_SPEED_LEFT 6
+#define MOTOR_SPEED_RIGHT 6
+#define MOTOR_SPEED_LEFT 5
 
 // Servo
 #define SERVO_PIN 10

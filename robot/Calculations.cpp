@@ -8,42 +8,45 @@ Calculations::Calculations()
 }
 
 void Calculations::loop() {
-    Serial.println("Loop starting");
-    this->step += servoDirection ? 1 : -1;
     moveServo();
+    this->step += servoDirection ? 1 : -1;
 
-    //getDistance();
-    //calculateMoveDirection();
+    getDistance();
+//    distances[this->step] = lidar.getDistance();
+//    Serial.println("Step value" + String(step));
+    /*getDistance();
+	for(int i = 0; i < MEASURE_POINTS; i++)
+		Serial.println(distances[i]);*/
+    calculateMoveDirection();
 
     // Delay before next servo move
-    //delay(1);
+    delay(20);
 }
 
 void Calculations::calculateMoveDirection() {
-    float shortestDistance = 0xffffff;
+    float longestDistance = 0;
     unsigned int distanceIndex = 0;
 
     for (unsigned int i = 0; i < MEASURE_POINTS; i++) {
-        if (distances[i] < shortestDistance) {
-            shortestDistance = distances[i];
+        if (distances[i] > longestDistance) {
+            longestDistance = distances[i];
             distanceIndex = i;
         }
     }
 
-    motor.degreeTurn(127, (distanceIndex * 180) / MEASURE_POINTS);
+    motor.degreeTurn(60, distanceIndex*180 / ((float)MEASURE_POINTS));
+    //motor.forward(127);
 }
 
 void Calculations::moveServo() {
-    Serial.println("Moving servo");
     // Change direction of servo if max/min position is reached
-    if (this->step * 180 / MEASURE_POINTS >= 180) {
+    if ((this->step+1) * 180 / MEASURE_POINTS >= 180) {
         servoDirection = false;
-    } else if (this->step <= 0) {
+    } else if ((this->step-1) <= 0) {
         servoDirection = true;
     }
 
     // Update servo position
-    Serial.print(String("Servo value") + (this->step * 180 / MEASURE_POINTS));
     servo.write(this->step * 180 / MEASURE_POINTS);
 }
 

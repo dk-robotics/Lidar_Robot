@@ -6,7 +6,7 @@
 #include "Lidar.h"
 #include "Motor.h"
 
-#define MEASURE_POINTS 12
+#define MEASURE_POINTS 24
 
 class Calculations {
 public:
