@@ -22,7 +22,7 @@ private:
     Motor motor;
 
 
-    float distances[MEASURE_POINTS];
+    int distances[MEASURE_POINTS];
     Servo servo;
     int step;
     // true = right, false = left
