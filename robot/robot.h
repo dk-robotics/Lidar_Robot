@@ -8,16 +8,19 @@
 
 #include "Calculations.h"
 
-Calculations calcs;
+Calculations* calcs;
 
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
+    Serial.write("Starting program");
+
+    calcs = new Calculations();
 }
 
 void loop() {
     // put your main code here, to run repeatedly:
-    calcs.loop();
+    calcs->loop();
 }
 
 #endif //LIDARROBOT_MAIN_H

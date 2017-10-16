@@ -16,6 +16,6 @@
 #define MOTOR_SPEED_LEFT 6
 
 // Servo
-#define SERVO_PIN 3
+#define SERVO_PIN 10
 
 #endif //LIDARROBOT_PINSETUP_H
