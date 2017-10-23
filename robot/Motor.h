@@ -19,6 +19,16 @@ public:
     void left(uint8_t speed, uint8_t turnRate);
 
     void degreeTurn(uint8_t speed, unsigned int degrees);
+
+    /**
+     * Turn one way on one side of the wheels and another on the other side
+     * @param speed the speed to turn
+     * @param direction true = right, false = left
+     */
+    void tankTurn(uint8_t speed, boolean direction);
+
+protected:
+    uint8_t easeOut(uint8_t step);
 };
 
 

@@ -5,13 +5,19 @@
 #include <Servo.h>
 #include "Lidar.h"
 #include "Motor.h"
+#include "ArduinoLoopable.h"
 
 #define MEASURE_POINTS 24
 
-class Calculations {
+class FormelSIT : public ArduinoLoopable {
 public:
-    Calculations();
-    void loop();
+    FormelSIT();
+
+private:
+public:
+    void start() override;
+
+    void loop() override;
 
 private:
     void moveServo();
@@ -23,6 +29,7 @@ private:
 
 
     int distances[MEASURE_POINTS];
+    int longestDistanceIndex;
     Servo servo;
     int step;
     // true = right, false = left

@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 #include "Motor.h"
+#include "Debug.h"
 
 Motor::Motor() = default;
 
@@ -41,8 +42,8 @@ void Motor::backwards(uint8_t speed) {
 void Motor::right(uint8_t speed, uint8_t turnRate) {
     resetMotors();
 
-    analogWrite(MOTOR_SPEED_RIGHT, speed);
-    analogWrite(MOTOR_SPEED_LEFT, (speed - (turnRate * speed)/0xff));
+    analogWrite(MOTOR_SPEED_RIGHT, speed - (turnRate * speed)/255);
+    analogWrite(MOTOR_SPEED_LEFT, max(speed + (turnRate * speed)/255, 255));
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
@@ -51,14 +52,15 @@ void Motor::right(uint8_t speed, uint8_t turnRate) {
 void Motor::left(uint8_t speed, uint8_t turnRate) {
     resetMotors();
 
-    analogWrite(MOTOR_SPEED_LEFT, speed);
-    analogWrite(MOTOR_SPEED_RIGHT, (speed - (turnRate * speed)/0xff));
+    analogWrite(MOTOR_SPEED_LEFT, speed - (turnRate * speed)/255);
+    analogWrite(MOTOR_SPEED_RIGHT, max(speed + (turnRate * speed)/255, 255));
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
 }
 
 void Motor::degreeTurn(uint8_t speed, unsigned int degrees) {
+    //debugLog("Degree turn, speed=" + String(speed) + ", degree=" + String(degrees));
     if (degrees > 90) {
         // move right
 
@@ -73,4 +75,21 @@ void Motor::degreeTurn(uint8_t speed, unsigned int degrees) {
         // move forwards
         forward(speed);
     }
+}
+
+void Motor::tankTurn(uint8_t speed, boolean rightDirection) {
+    resetMotors();
+
+    digitalWrite(MOTOR_RIGHT_FORWARD, !rightDirection ? HIGH : LOW);
+    digitalWrite(MOTOR_RIGHT_BACKWARDS, rightDirection ? HIGH : LOW);
+
+    digitalWrite(MOTOR_LEFT_FORWARD, rightDirection ? HIGH : LOW);
+    digitalWrite(MOTOR_LEFT_BACKWARDS, !rightDirection ? HIGH : LOW);
+
+    analogWrite(MOTOR_SPEED_LEFT, speed);
+    analogWrite(MOTOR_SPEED_RIGHT, speed);
+}
+
+uint8_t Motor::easeOut(uint8_t position) {
+    return (uint8_t) (1 - pow((1-position/255.0), 5)) * 255;
 }

@@ -6,21 +6,22 @@
 #ifndef LIDARROBOT_MAIN_H
 #define LIDARROBOT_MAIN_H
 
-#include "Calculations.h"
+#include "FormelSIT.h"
+#include "StateManager.h"
+#include "Debug.h"
 
-Calculations* calcs;
+StateManager stateManager;
+Motor motor;
 
 void setup() {
-    // put your setup code here, to run once:
     Serial.begin(9600);
-    Serial.write("Starting program");
+    debugLog("Robot starting...");
 
-    calcs = new Calculations();
+    stateManager.start();
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
-    calcs->loop();
+    stateManager.loop();
 }
 
 #endif //LIDARROBOT_MAIN_H

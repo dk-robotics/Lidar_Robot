@@ -23,7 +23,7 @@ void Lidar::begin(bool fasti2c) {
 
     //Configuration : Default range, higher speed short range
     write(0x02, 0x80); // Default
-    write(0x04, 0x00); // Enable meassurement quick termination
+    write(0x04, 0x08); // Enable meassurement quick termination
     write(0x1c, 0x00); // Default
 }
 
