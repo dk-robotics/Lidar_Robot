@@ -42,8 +42,10 @@ void Motor::backwards(uint8_t speed) {
 void Motor::right(uint8_t speed, uint8_t turnRate) {
     resetMotors();
 
-    analogWrite(MOTOR_SPEED_RIGHT, speed - (turnRate * speed)/255);
-    analogWrite(MOTOR_SPEED_LEFT, max(speed + (turnRate * speed)/255, 255));
+    debugLog("Turn right, turnRate=" + String(turnRate) + ", calculatedSpeed=" + String(speed - (turnRate * speed)/255.0));
+
+    analogWrite(MOTOR_SPEED_RIGHT, speed - (turnRate * speed)/255.0);
+    analogWrite(MOTOR_SPEED_LEFT, speed);
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
@@ -52,18 +54,19 @@ void Motor::right(uint8_t speed, uint8_t turnRate) {
 void Motor::left(uint8_t speed, uint8_t turnRate) {
     resetMotors();
 
-    analogWrite(MOTOR_SPEED_LEFT, speed - (turnRate * speed)/255);
-    analogWrite(MOTOR_SPEED_RIGHT, max(speed + (turnRate * speed)/255, 255));
+    debugLog("Turn left, turnRate=" + String(turnRate) + ", calculatedSpeed=" + String(speed - (turnRate * speed)/255.0) );
+
+    analogWrite(MOTOR_SPEED_LEFT, speed - (turnRate * speed)/255.0);
+    analogWrite(MOTOR_SPEED_RIGHT, speed);
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
 }
 
 void Motor::degreeTurn(uint8_t speed, unsigned int degrees) {
-    //debugLog("Degree turn, speed=" + String(speed) + ", degree=" + String(degrees));
-    if (degrees > 90) {
+    debugLog("Degree turn, speed=" + String(speed) + ", degree=" + String(degrees));
+    if (degrees < 90) {
         // move right
-
         uint8_t turnRate = map(degrees, 90, 180, 0, 255);
         right(speed, turnRate);
     } else if (degrees < 90) {

@@ -7,7 +7,7 @@
 #include "Motor.h"
 #include "ArduinoLoopable.h"
 
-#define MEASURE_POINTS 24
+#define MEASURE_POINTS 8
 
 class FormelSIT : public ArduinoLoopable {
 public:
