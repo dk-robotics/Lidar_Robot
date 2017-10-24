@@ -17,9 +17,6 @@
 #define MOTOR_SPEED_RIGHT 6
 #define MOTOR_SPEED_LEFT 5
 
-// Servo -
-#define SERVO_PIN 10
-
 // Stepper
 #define STEPPER_DIRECTION 10
 #define STEPPER_STEP 11

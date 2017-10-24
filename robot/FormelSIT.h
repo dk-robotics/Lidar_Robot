@@ -6,8 +6,9 @@
 #include "Lidar.h"
 #include "Motor.h"
 #include "ArduinoLoopable.h"
+#include "Stepper.h"
 
-#define MEASURE_POINTS 8
+#define MEASURE_POINTS 9
 
 class FormelSIT : public ArduinoLoopable {
 public:
@@ -20,20 +21,19 @@ public:
     void loop() override;
 
 private:
-    void moveServo();
     void calculateMoveDirection();
     void getDistance();
 
     Lidar lidar;
     Motor motor;
 
-
     int distances[MEASURE_POINTS];
     int longestDistanceIndex;
-    Servo servo;
+    Stepper stepper;
     int step;
+
     // true = right, false = left
-    boolean servoDirection;
+    boolean stepperDirection;
 };
 
 #endif

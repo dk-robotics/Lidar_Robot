@@ -3,22 +3,22 @@
 #include "Debug.h"
 
 FormelSIT::FormelSIT()
-        : distances(), step(0), servoDirection(true), longestDistanceIndex(0) {}
+        : distances(), step(0), stepperDirection(true), longestDistanceIndex(0) {}
 
 void FormelSIT::start() {
-    servo.attach(SERVO_PIN);
     lidar.begin();
+    stepper.calibrate();
 }
 
 void FormelSIT::loop() {
-    moveServo();
-
     // Change direction of servo if max/min position is reached
     if ((this->step+1) * 180.0f / MEASURE_POINTS >= 180) {
-        servoDirection = false;
+        stepperDirection = false;
     } else if ((this->step-1) <= 0) {
-        servoDirection = true;
+        stepperDirection = true;
     }
+
+    stepper.move(this->step / MEASURE_POINTS * STEPS_PER_REV / (uint8_t) 2, stepperDirection);
 
     delay(100);
 
@@ -26,7 +26,7 @@ void FormelSIT::loop() {
 
     calculateMoveDirection();
 
-    this->step += servoDirection ? 1 : -1;
+    this->step += stepperDirection ? 1 : -1;
 }
 
 void FormelSIT::calculateMoveDirection() {
@@ -59,12 +59,6 @@ void FormelSIT::calculateMoveDirection() {
     //motor.forward(20);
     debugLog("Calling degree turn from FormelSIT");
     motor.degreeTurn(45, longestDistanceIndex*180 / ((float)MEASURE_POINTS));
-}
-
-void FormelSIT::moveServo() {
-    debugLog("Moving servo");
-    // Update servo position
-    servo.write(this->step * 180 / MEASURE_POINTS);
 }
 
 void FormelSIT::getDistance() {
