@@ -11,11 +11,15 @@
 #include "Debug.h"
 
 StateManager stateManager;
-Motor motor;
 
 void setup() {
+#if defined(DEBUG) || defined(DEBUG_LIDAR)
     Serial.begin(9600);
     debugLog("Robot starting...");
+#endif
+
+    pinMode(13, OUTPUT);
+    digitalWrite(13, HIGH);
 
     stateManager.start();
 }

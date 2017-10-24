@@ -20,10 +20,7 @@ void FormelSIT::loop() {
         servoDirection = true;
     }
 
-
-
-    // Delay before next servo move
-    delay(20);
+    delay(100);
 
     getDistance();
 
@@ -33,28 +30,22 @@ void FormelSIT::loop() {
 }
 
 void FormelSIT::calculateMoveDirection() {
-
-/*
-    float longestDistance = 0;
-    unsigned int longestDistanceIndex = 0;
-
-    for (unsigned int i = 0; i < MEASURE_POINTS; i++) {
-        if (distances[i] > longestDistance) {
-            longestDistance = distances[i];
-            longestDistanceIndex = i;
-            Serial.print(",*" + String(distances[i]));
-        } else {
-            Serial.print(", " + String(distances[i]));
-        }
-    }
-*/
-
-
-
+    debugLog("Calculating move direction");
     if(distances[this->step] > distances[longestDistanceIndex]){
         longestDistanceIndex = this->step;
         debugLog("Found new longest distance, " + String(longestDistanceIndex));
+#ifdef DEBUG_LIDAR
+        for (unsigned int i = 0; i < MEASURE_POINTS; i++) {
+            if (i == longestDistanceIndex) {
+                Serial.print("*");
+            } else {
+                Serial.print("-");
+            }
+        }
+        Serial.println("   " + String(distances[longestDistanceIndex]));
+#endif
     } else if (this->step == longestDistanceIndex) {
+        debugLog("Did not find new distance, must check whole array");
         float newLongestDistance = 0;
 
         for (unsigned int i = 0; i < MEASURE_POINTS; i++) {
@@ -65,17 +56,18 @@ void FormelSIT::calculateMoveDirection() {
         }
     }
 
-    motor.degreeTurn(5, longestDistanceIndex*180 / ((float)MEASURE_POINTS));
-    //motor.degreeTurn(20, 180);
-    //motor.forward(127);
-
+    //motor.forward(20);
+    debugLog("Calling degree turn from FormelSIT");
+    motor.degreeTurn(45, longestDistanceIndex*180 / ((float)MEASURE_POINTS));
 }
 
 void FormelSIT::moveServo() {
+    debugLog("Moving servo");
     // Update servo position
     servo.write(this->step * 180 / MEASURE_POINTS);
 }
 
 void FormelSIT::getDistance() {
+    debugLog("Getting distance from lidar");
     distances[this->step] = lidar.getDistance();
 }

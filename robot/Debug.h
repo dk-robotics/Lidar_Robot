@@ -6,6 +6,7 @@
 #define LIDARROBOT_DEBUG_H
 
 #define DEBUG
+//#define DEBUG_LIDAR
 
 #ifdef DEBUG
     #define debugLog(X) Serial.println(X)
