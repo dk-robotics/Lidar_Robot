@@ -20,6 +20,11 @@
 // Servo
 #define SERVO_PIN 10
 
+// Stepper
+#define STEPPER_DIRECTION 10
+#define STEPPER_STEP 11
+#define HALL_SENSOR 12
+
 // Lidar
 #define SDA A4
 #define SCL A5
