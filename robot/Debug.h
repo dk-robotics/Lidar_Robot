@@ -8,6 +8,8 @@
 #define DEBUG
 //#define DEBUG_LIDAR
 
+#define DISABLE_MOTOR
+
 #ifdef DEBUG
     #define debugLog(X) Serial.println(X)
 #else

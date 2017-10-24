@@ -20,6 +20,7 @@ void resetMotors() {
 }
 
 void Motor::forward(uint8_t speed) {
+#ifdef DISABLE_MOTOR
     resetMotors();
 
     analogWrite(MOTOR_SPEED_LEFT, speed);
@@ -27,9 +28,11 @@ void Motor::forward(uint8_t speed) {
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
+#endif
 }
 
 void Motor::backwards(uint8_t speed) {
+#ifdef DISABLE_MOTOR
     resetMotors();
 
     analogWrite(MOTOR_SPEED_LEFT, speed);
@@ -37,9 +40,11 @@ void Motor::backwards(uint8_t speed) {
 
     digitalWrite(MOTOR_LEFT_BACKWARDS, HIGH);
     digitalWrite(MOTOR_RIGHT_BACKWARDS, HIGH);
+#endif
 }
 
 void Motor::right(uint8_t speed, uint8_t turnRate) {
+#ifdef DISABLE_MOTOR
     resetMotors();
 
     debugLog("Turn right, turnRate=" + String(turnRate) + ", calculatedSpeed=" + String(speed - (turnRate * speed)/255.0));
@@ -49,9 +54,11 @@ void Motor::right(uint8_t speed, uint8_t turnRate) {
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
+#endif
 }
 
 void Motor::left(uint8_t speed, uint8_t turnRate) {
+#ifdef DISABLE_MOTOR
     resetMotors();
 
     debugLog("Turn left, turnRate=" + String(turnRate) + ", calculatedSpeed=" + String(speed - (turnRate * speed)/255.0) );
@@ -61,9 +68,11 @@ void Motor::left(uint8_t speed, uint8_t turnRate) {
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
+#endif
 }
 
 void Motor::degreeTurn(uint8_t speed, unsigned int degrees) {
+#ifdef DISABLE_MOTOR
     debugLog("Degree turn, speed=" + String(speed) + ", degree=" + String(degrees));
     if (degrees < 90) {
         // move right
@@ -78,9 +87,11 @@ void Motor::degreeTurn(uint8_t speed, unsigned int degrees) {
         // move forwards
         forward(speed);
     }
+#endif
 }
 
 void Motor::tankTurn(uint8_t speed, boolean rightDirection) {
+#ifdef DISABLE_MOTOR
     resetMotors();
 
     digitalWrite(MOTOR_RIGHT_FORWARD, !rightDirection ? HIGH : LOW);
@@ -91,6 +102,7 @@ void Motor::tankTurn(uint8_t speed, boolean rightDirection) {
 
     analogWrite(MOTOR_SPEED_LEFT, speed);
     analogWrite(MOTOR_SPEED_RIGHT, speed);
+#endif
 }
 
 uint8_t Motor::easeOut(uint8_t position) {
