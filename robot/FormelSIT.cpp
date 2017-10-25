@@ -19,7 +19,7 @@ void FormelSIT::loop() {
     }
 
     //stepper.sweep();
-    debugLog("Moving stepper " + stepperDirection ? "right " : "left " + String((STEPS_PER_REV) / (2 * MEASURE_POINTS)) + " steps");
+    debugLog("Moving stepper " + ( stepperDirection ? String("right ") : String("left ") ) + String((STEPS_PER_REV) / (2 * MEASURE_POINTS)) + " steps");
     stepper.move((STEPS_PER_REV) / (2 * MEASURE_POINTS), stepperDirection);
 
     getDistance();
@@ -58,7 +58,7 @@ void FormelSIT::calculateMoveDirection() {
 
     //motor.forward(20);
     debugLog("Calling degree turn from FormelSIT");
-    motor.degreeTurn(45, longestDistanceIndex*180 / ((float)MEASURE_POINTS));
+    motor.degreeTurn(45, longestDistanceIndex*180 / ((float)MEASURE_POINTS-1));
 }
 
 void FormelSIT::getDistance() {

@@ -14,7 +14,7 @@ void Stepper::calibrate() {
     while (digitalRead(HALL_SENSOR) == HIGH)
         move(1, false);
 
-    move(-26+50, false);
+    move(50-26, false);
 }
 
 void Stepper::move(uint8_t steps, boolean dir) {
