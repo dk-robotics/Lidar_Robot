@@ -30,6 +30,13 @@ void FormelSIT::loop() {
 }
 
 void FormelSIT::calculateMoveDirection() {
+    debugLog("Checking for min distance")
+    bool foundMinDistance = false;
+    // TODO find a good min distance
+    if (distances[this->step] < 150) {
+        foundMinDistance = true;
+    }
+
     debugLog("Calculating move direction");
     if(distances[this->step] > distances[longestDistanceIndex]){
         longestDistanceIndex = this->step;
@@ -56,7 +63,11 @@ void FormelSIT::calculateMoveDirection() {
         }
     }
 
-    //motor.forward(20);
+    if (foundMinDistance) {
+        // Flip the way we turn
+        motor.degreeTurn(45, ((MEASURE_POINTS-1) - longestDistanceIndex*180) / ((float)MEASURE_POINTS-1));
+    }
+
     debugLog("Calling degree turn from FormelSIT");
     motor.degreeTurn(45, longestDistanceIndex*180 / ((float)MEASURE_POINTS-1));
 }
