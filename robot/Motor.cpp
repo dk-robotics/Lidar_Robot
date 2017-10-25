@@ -49,7 +49,8 @@ void Motor::right(uint8_t speed, uint8_t turnRate) {
 
     debugLog("Turn right, turnRate=" + String(turnRate) + ", calculatedSpeed=" + String(speed - (turnRate * speed)/255.0));
 
-    analogWrite(MOTOR_SPEED_RIGHT, speed - (turnRate * speed)/255.0);
+    //analogWrite(MOTOR_SPEED_RIGHT, speed - (turnRate * speed)/255.0);
+    analogWrite(MOTOR_SPEED_RIGHT, 0);
     analogWrite(MOTOR_SPEED_LEFT, speed);
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
@@ -63,7 +64,8 @@ void Motor::left(uint8_t speed, uint8_t turnRate) {
 
     debugLog("Turn left, turnRate=" + String(turnRate) + ", calculatedSpeed=" + String(speed - (turnRate * speed)/255.0) );
 
-    analogWrite(MOTOR_SPEED_LEFT, speed - (turnRate * speed)/255.0);
+    //analogWrite(MOTOR_SPEED_LEFT, speed - (turnRate * speed)/255.0);
+    analogWrite(MOTOR_SPEED_LEFT, 0);
     analogWrite(MOTOR_SPEED_RIGHT, speed);
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
