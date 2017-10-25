@@ -1,11 +1,8 @@
 #include "DebouncedButton.h"
-#include <Arduino.h>
 
-DebouncedButton::DebouncedButton(char pin) {
-	this->pin = pin;
+DebouncedButton::DebouncedButton(uint8_t pin)
+        : time(-1), mode(single), pin(pin), state(false), toggled(false) {
 	pinMode(pin, INPUT_PULLUP);
-	mode = Mode::single;
-	time = -1;
 }
 
 void DebouncedButton::setMode(Mode mode) {
@@ -15,30 +12,25 @@ void DebouncedButton::setMode(Mode mode) {
 boolean DebouncedButton::getDebounced() {
 	int in = digitalRead(pin);
     if(in != state && (millis() - time > DEBOUNCE_DELAY || time == -1)) {
-        state = in;
+        state = (bool) in;
         time = millis();
     }
     return !state;
 }
 
 boolean DebouncedButton::getState() {
-	boolean toReturn;
 	switch(mode) {
 		case Mode::noDebounce:
-			toReturn = !digitalRead(pin);
-			break;
+			return !digitalRead(pin);
 		case Mode::hold:
-			toReturn = getDebounced();
-			break;
+			return getDebounced();
 		case Mode::single:
 			boolean oldState = state;
-			toReturn = getDebounced() && state != oldState;
-			break;
+			return getDebounced() && state != oldState;
 		case Mode::toggle:
 			if(getDebounced())
 				toggled = !toggled;
-			toReturn = toggled;
-			break;
+			return toggled;
 	}
-	return toReturn;
+    return false;
 }
