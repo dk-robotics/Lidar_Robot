@@ -5,8 +5,8 @@
 #ifndef LIDARROBOT_DEBUG_H
 #define LIDARROBOT_DEBUG_H
 
-#define DEBUG
-//#define DEBUG_LIDAR
+//#define DEBUG
+#define DEBUG_LIDAR
 
 #define DISABLE_MOTOR
 

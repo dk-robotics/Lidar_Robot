@@ -18,9 +18,9 @@ void FormelSIT::loop() {
         stepperDirection = true;
     }
 
-    stepper.move(this->step / MEASURE_POINTS * STEPS_PER_REV / (uint8_t) 2, stepperDirection);
-
-    delay(100);
+    //stepper.sweep();
+    debugLog("Moving stepper " + String (this->step / MEASURE_POINTS * STEPS_PER_REV / 2.0) + " steps");
+    stepper.move(1 / (double) MEASURE_POINTS * STEPS_PER_REV / 2.0, stepperDirection);
 
     getDistance();
 

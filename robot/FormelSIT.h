@@ -8,7 +8,7 @@
 #include "ArduinoLoopable.h"
 #include "Stepper.h"
 
-#define MEASURE_POINTS 9
+#define MEASURE_POINTS 10
 
 class FormelSIT : public ArduinoLoopable {
 public:
