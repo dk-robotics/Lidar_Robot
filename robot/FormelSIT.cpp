@@ -38,7 +38,7 @@ void FormelSIT::loop() {
 
 void FormelSIT::calculateMoveDirection() {
     // TODO find a good min distance
-    if (distances[this->step] < 80 && distances[this->step] > 5) {
+    if (distances[this->step] < 50 && distances[this->step] > 5) {
         debugLog("Found minimum distance")
         motor.tankTurn(45, step < MEASURE_POINTS/2);
         return;
