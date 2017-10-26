@@ -25,10 +25,11 @@ void resetMotors() {
 
 uint8_t calculateTurnRate(uint8_t speed, uint8_t turnRate, bool boost) {
     int value;
+    float multiplier = 1.5;
     if (boost) {
-        value = (int) (speed + turnRate * speed / 255.0);
+        value = (int) (speed + turnRate * speed * multiplier / 255.0);
     } else {
-        value = (int) (speed - turnRate * speed / 255.0);
+        value = (int) (speed - turnRate * speed * multiplier / 255.0);
     }
     debugLog("Calculating turn rate: " + String(value) + ", speed: " + String(speed) + " input turn rate: " + turnRate);
     if (value > 255) {
