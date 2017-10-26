@@ -26,9 +26,6 @@ public:
      * @param direction true = right, false = left
      */
     void tankTurn(uint8_t speed, boolean direction);
-
-protected:
-    uint8_t easeOut(uint8_t step);
 };
 
 

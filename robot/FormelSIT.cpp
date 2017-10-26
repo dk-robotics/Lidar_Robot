@@ -11,6 +11,13 @@ void FormelSIT::start() {
 }
 
 void FormelSIT::loop() {
+
+    //while(digitalRead(2) == LOW) {
+    //    delay(15);
+    //}
+
+    debugLog("");
+    debugLog("------ NEXT LOOP CYCLE ------");
     // Change direction of servo if max/min position is reached
     if ((this->step+1) * 180.0f / MEASURE_POINTS >= 180) {
         stepperDirection = false;
@@ -30,17 +37,20 @@ void FormelSIT::loop() {
 }
 
 void FormelSIT::calculateMoveDirection() {
-    debugLog("Checking for min distance")
-    bool foundMinDistance = false;
     // TODO find a good min distance
-    if (distances[this->step] < 150) {
-        foundMinDistance = true;
+    if (distances[this->step] < 80 && distances[this->step] > 5) {
+        debugLog("Found minimum distance")
+        motor.tankTurn(45, step < MEASURE_POINTS/2);
+        return;
     }
 
     debugLog("Calculating move direction");
     if(distances[this->step] > distances[longestDistanceIndex]){
         longestDistanceIndex = this->step;
         debugLog("Found new longest distance, " + String(longestDistanceIndex));
+
+        debugLog("Calling degree turn from FormelSIT");
+        motor.degreeTurn(30, longestDistanceIndex*180 / ((float)MEASURE_POINTS-1));
 #ifdef DEBUG_LIDAR
         for (unsigned int i = 0; i < MEASURE_POINTS; i++) {
             if (i == longestDistanceIndex) {
@@ -62,14 +72,6 @@ void FormelSIT::calculateMoveDirection() {
             }
         }
     }
-
-    if (foundMinDistance) {
-        // Flip the way we turn
-        motor.degreeTurn(45, ((MEASURE_POINTS-1) - longestDistanceIndex*180) / ((float)MEASURE_POINTS-1));
-    }
-
-    debugLog("Calling degree turn from FormelSIT");
-    motor.degreeTurn(45, longestDistanceIndex*180 / ((float)MEASURE_POINTS-1));
 }
 
 void FormelSIT::getDistance() {
