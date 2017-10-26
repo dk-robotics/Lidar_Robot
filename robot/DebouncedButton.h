@@ -44,14 +44,17 @@ public:
      * Get the current state of the button, is it being pressed, the state depends on the mode
      * @return the state of the button for the selected mode
      */
-    boolean getState();
+    bool getState();
 
 private:
     uint8_t pin;
     Mode mode;
     long time;
     bool state;
+    bool oldState;
     bool toggled;
 
     bool getDebounced();
 };
+
+#endif
