@@ -6,20 +6,29 @@ FormelSIT::FormelSIT()
         : distances(), step(0), stepperDirection(true), longestDistanceIndex(0) {}
 
 void FormelSIT::start() {
+    debugLog("Starting formel SIT");
     lidar.begin();
     stepper.calibrate();
 }
 
 void FormelSIT::loop() {
+
+    //while(digitalRead(2) == LOW) {
+    //    delay(15);
+    //}
+
+    debugLog("");
+    debugLog("------ NEXT LOOP CYCLE ------");
     // Change direction of servo if max/min position is reached
-    if ((this->step+1) * 180.0f / MEASURE_POINTS >= 180) {
+    if ((this->step + 1) * 180.0f / MEASURE_POINTS >= 180) {
         stepperDirection = false;
-    } else if ((this->step-1) <= 0) {
+    } else if ((this->step - 1) <= 0) {
         stepperDirection = true;
     }
 
     //stepper.sweep();
-    debugLog("Moving stepper " + ( stepperDirection ? String("right ") : String("left ") ) + String((STEPS_PER_REV) / (2 * MEASURE_POINTS)) + " steps");
+    debugLog("Moving stepper " + (stepperDirection ? String("right ") : String("left ")) +
+             String((STEPS_PER_REV) / (2 * MEASURE_POINTS)) + " steps");
     stepper.move((STEPS_PER_REV) / (2 * MEASURE_POINTS), stepperDirection);
 
     getDistance();
@@ -30,10 +39,36 @@ void FormelSIT::loop() {
 }
 
 void FormelSIT::calculateMoveDirection() {
+    //float multiplier = ( (1 - abs((MEASURE_POINTS-1)/2 - step)) / 4 ) + 1;
+    if (distances[this->step] < 40 && distances[this->step] > 5) {
+        debugLog("Found minimum distance");
+
+        if (minDistanceStuckPrevious && millis() - minDistanceStuckTime > 3000) {
+            debugLog("Stuck too long, trying to get free");
+            motor.backwards(45);
+            delay(1000);
+            motor.tankTurn(45, false);
+            delay(1500);
+        }
+
+        motor.tankTurn(50, step < MEASURE_POINTS / 2);
+        if (!minDistanceStuckPrevious) {
+            minDistanceStuckPrevious = true;
+            minDistanceStuckTime = millis();
+        }
+
+        return;
+    } else {
+        minDistanceStuckPrevious = false;
+    }
+
     debugLog("Calculating move direction");
-    if(distances[this->step] > distances[longestDistanceIndex]){
+    if (distances[this->step] > distances[longestDistanceIndex]) {
         longestDistanceIndex = this->step;
         debugLog("Found new longest distance, " + String(longestDistanceIndex));
+
+        debugLog("Calling degree turn from FormelSIT");
+        motor.degreeTurn(50, longestDistanceIndex * 180 / ((float) MEASURE_POINTS - 1));
 #ifdef DEBUG_LIDAR
         for (unsigned int i = 0; i < MEASURE_POINTS; i++) {
             if (i == longestDistanceIndex) {
@@ -55,10 +90,6 @@ void FormelSIT::calculateMoveDirection() {
             }
         }
     }
-
-    //motor.forward(20);
-    debugLog("Calling degree turn from FormelSIT");
-    motor.degreeTurn(45, longestDistanceIndex*180 / ((float)MEASURE_POINTS-1));
 }
 
 void FormelSIT::getDistance() {

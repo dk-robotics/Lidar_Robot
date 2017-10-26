@@ -1,7 +1,7 @@
 #include "DebouncedButton.h"
 
 DebouncedButton::DebouncedButton(uint8_t pin)
-        : time(-1), mode(single), pin(pin), state(false), toggled(false) {
+        : time(-1), mode(single), pin(pin), state(false), oldState(false), toggled(false) {
 	pinMode(pin, INPUT_PULLUP);
 }
 
@@ -9,7 +9,7 @@ void DebouncedButton::setMode(Mode mode) {
 	this->mode = mode;
 }
 
-boolean DebouncedButton::getDebounced() {
+bool DebouncedButton::getDebounced() {
 	int in = digitalRead(pin);
     if(in != state && (millis() - time > DEBOUNCE_DELAY || time == -1)) {
         state = (bool) in;
@@ -18,17 +18,18 @@ boolean DebouncedButton::getDebounced() {
     return !state;
 }
 
-boolean DebouncedButton::getState() {
+bool DebouncedButton::getState() {
 	switch(mode) {
 		case Mode::noDebounce:
 			return !digitalRead(pin);
 		case Mode::hold:
 			return getDebounced();
 		case Mode::single:
-			boolean oldState = state;
+			oldState = state;
 			return getDebounced() && state != oldState;
 		case Mode::toggle:
-			if(getDebounced())
+			oldState = state;
+			if(getDebounced() && state != oldState)
 				toggled = !toggled;
 			return toggled;
 	}

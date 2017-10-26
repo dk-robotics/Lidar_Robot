@@ -8,7 +8,7 @@
 #include "ArduinoLoopable.h"
 #include "Stepper.h"
 
-#define MEASURE_POINTS 10
+#define MEASURE_POINTS 12
 
 class FormelSIT : public ArduinoLoopable {
 public:
@@ -31,6 +31,8 @@ private:
     int longestDistanceIndex;
     Stepper stepper;
     int step;
+    unsigned long minDistanceStuckTime = 0;
+    bool minDistanceStuckPrevious = false;
 
     // true = right, false = left
     boolean stepperDirection;

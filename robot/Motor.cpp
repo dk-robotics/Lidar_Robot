@@ -8,6 +8,10 @@
 
 Motor::Motor() = default;
 
+uint8_t easeOut(uint8_t position) {
+    return (uint8_t) (1 - pow((1-position/255.0), 5)) * 255;
+}
+
 void resetMotors() {
     analogWrite(MOTOR_SPEED_LEFT, 0);
     analogWrite(MOTOR_SPEED_RIGHT, 0);
@@ -17,6 +21,24 @@ void resetMotors() {
 
     digitalWrite(MOTOR_RIGHT_BACKWARDS, LOW);
     digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
+}
+
+uint8_t calculateTurnRate(uint8_t speed, uint8_t turnRate, bool boost) {
+    int value;
+    float multiplier = 1.5;
+    if (boost) {
+        value = (int) (speed + turnRate * speed * multiplier / 255.0);
+    } else {
+        value = (int) (speed - turnRate * speed * multiplier / 255.0);
+    }
+    debugLog("Calculating turn rate: " + String(value) + ", speed: " + String(speed) + " input turn rate: " + turnRate);
+    if (value > 255) {
+        return 255;
+    } else if (value < 0) {
+        return 0;
+    } else {
+        return (uint8_t) value;
+    }
 }
 
 void Motor::forward(uint8_t speed) {
@@ -44,13 +66,14 @@ void Motor::backwards(uint8_t speed) {
 }
 
 void Motor::right(uint8_t speed, uint8_t turnRate) {
-    debugLog("Turn right, turnRate=" + String(turnRate) + ", calculatedSpeed=" + String(speed - (turnRate * speed)/255.0));
+    debugLog("Moving motors left=" + String(calculateTurnRate(speed, turnRate, true)) + " right="
+             + String(calculateTurnRate(speed, turnRate, false)));
 #ifndef DISABLE_MOTOR
     resetMotors();
 
-    //analogWrite(MOTOR_SPEED_RIGHT, speed - (turnRate * speed)/255.0);
-    analogWrite(MOTOR_SPEED_RIGHT, 0);
-    analogWrite(MOTOR_SPEED_LEFT, speed);
+    analogWrite(MOTOR_SPEED_RIGHT, calculateTurnRate(speed, turnRate, false));
+    //analogWrite(MOTOR_SPEED_RIGHT, 0);
+    analogWrite(MOTOR_SPEED_LEFT, calculateTurnRate(speed, turnRate, true));
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
@@ -58,14 +81,15 @@ void Motor::right(uint8_t speed, uint8_t turnRate) {
 }
 
 void Motor::left(uint8_t speed, uint8_t turnRate) {
-    debugLog("Turn left, turnRate=" + String(turnRate) + ", calculatedSpeed=" + String(speed - (turnRate * speed)/255.0) );
+    debugLog("Moving motors left=" + String(calculateTurnRate(speed, turnRate, false)) + " right="
+             + String(calculateTurnRate(speed, turnRate, true)));
 
 #ifndef DISABLE_MOTOR
     resetMotors();
 
-    //analogWrite(MOTOR_SPEED_LEFT, speed - (turnRate * speed)/255.0);
-    analogWrite(MOTOR_SPEED_LEFT, 0);
-    analogWrite(MOTOR_SPEED_RIGHT, speed);
+    analogWrite(MOTOR_SPEED_LEFT, calculateTurnRate(speed, turnRate, false));
+    //analogWrite(MOTOR_SPEED_LEFT, 0);
+    analogWrite(MOTOR_SPEED_RIGHT, calculateTurnRate(speed, turnRate, true));
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
@@ -76,12 +100,14 @@ void Motor::degreeTurn(uint8_t speed, unsigned int degrees) {
     debugLog("Degree turn, speed=" + String(speed) + ", degree=" + String(degrees));
     if (degrees < 90) {
         // move right
-        uint8_t turnRate = map(degrees, 90, 180, 0, 255);
+        uint8_t turnRate = map(degrees, 90, 0, 0, 255);
+        debugLog("Mapped turn rate, right " + String(turnRate));
         right(speed, turnRate);
     } else if (degrees > 90) {
         // move left
 
-        uint8_t turnRate = map(degrees, 90, 0, 0, 255);
+        uint8_t turnRate = map(degrees, 90, 180, 0, 255);
+        debugLog("Mapped turn rate, left " + String(turnRate));
         left(speed, turnRate);
     } else {
         // move forwards
@@ -102,8 +128,4 @@ void Motor::tankTurn(uint8_t speed, boolean rightDirection) {
     analogWrite(MOTOR_SPEED_LEFT, speed);
     analogWrite(MOTOR_SPEED_RIGHT, speed);
 #endif
-}
-
-uint8_t Motor::easeOut(uint8_t position) {
-    return (uint8_t) (1 - pow((1-position/255.0), 5)) * 255;
 }
