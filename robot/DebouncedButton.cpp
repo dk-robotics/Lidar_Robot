@@ -28,7 +28,8 @@ bool DebouncedButton::getState() {
 			oldState = state;
 			return getDebounced() && state != oldState;
 		case Mode::toggle:
-			if(getDebounced())
+			oldState = state;
+			if(getDebounced() && state != oldState)
 				toggled = !toggled;
 			return toggled;
 	}
