@@ -23,19 +23,11 @@ void resetMotors() {
     digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
 }
 
-uint8_t  calculateTurnRate(uint8_t speed, uint8_t turnRate, bool boost) {
-    int value;
-    float multiplier = 2.5;
+int calculateTurnRate(uint8_t speed, uint8_t turnRate, bool boost) {
     if (boost) {
-        value = (int) (speed + turnRate * speed * multiplier / 255.0);
+        return min(speed + turnRate, 255);
     } else {
-        value = (int) (speed - turnRate * speed * multiplier / 255.0);
-    }
-    debugLog("Calculating turn rate: " + String(value) + ", speed: " + String(speed) + " input turn rate: " + turnRate);
-    if (value > 255) {
-        return 255;
-    } else {
-        return (uint8_t) value;
+        return max(speed - turnRate, 0);
     }
 }
 
@@ -64,13 +56,11 @@ void Motor::backwards(uint8_t speed) {
 }
 
 void Motor::right(uint8_t speed, uint8_t turnRate) {
-    debugLog("Moving motors left=" + String(calculateTurnRate(speed, turnRate, true)) + " right="
-             + String(calculateTurnRate(speed, turnRate, false)));
 #ifndef DISABLE_MOTOR
     resetMotors();
 
-    uint8_t turnRateRight = calculateTurnRate(speed, turnRate, false);
-    uint8_t turnRateLeft = calculateTurnRate(speed, turnRate, true);
+    int turnRateRight = calculateTurnRate(speed, turnRate, false);
+    int turnRateLeft = calculateTurnRate(speed, turnRate, true);
 
     if (turnRateLeft >= 0) {
         digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
@@ -94,14 +84,11 @@ void Motor::right(uint8_t speed, uint8_t turnRate) {
 }
 
 void Motor::left(uint8_t speed, uint8_t turnRate) {
-    debugLog("Moving motors left=" + String(calculateTurnRate(speed, turnRate, false)) + " right="
-             + String(calculateTurnRate(speed, turnRate, true)));
-
 #ifndef DISABLE_MOTOR
     resetMotors();
 
-    uint8_t turnRateLeft = calculateTurnRate(speed, turnRate, false);
-    uint8_t turnRateRight = calculateTurnRate(speed, turnRate, true);
+    int turnRateLeft = calculateTurnRate(speed, turnRate, false);
+    int turnRateRight = calculateTurnRate(speed, turnRate, true);
 
     if (turnRateLeft >= 0) {
         digitalWrite(MOTOR_LEFT_FORWARD, HIGH);

@@ -6,26 +6,21 @@
 #ifndef LIDARROBOT_MAIN_H
 #define LIDARROBOT_MAIN_H
 
-#include "FormelSIT.h"
-#include "StateManager.h"
+#include "RemoteControl.h"
 #include "Debug.h"
 
-StateManager stateManager;
+RemoteControl rc;
 
 void setup() {
 #if defined(DEBUG) || defined(DEBUG_LIDAR)
     Serial.begin(9600);
     debugLog("Robot starting...");
 #endif
-
-    pinMode(13, OUTPUT);
-    digitalWrite(13, HIGH);
-
-    stateManager.start();
+    rc.start();
 }
 
 void loop() {
-    stateManager.loop();
+    rc.loop();
 }
 
 #endif //LIDARROBOT_MAIN_H
