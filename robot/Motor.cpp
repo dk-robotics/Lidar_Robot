@@ -23,9 +23,9 @@ void resetMotors() {
     digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
 }
 
-uint8_t calculateTurnRate(uint8_t speed, uint8_t turnRate, bool boost) {
+uint8_t  calculateTurnRate(uint8_t speed, uint8_t turnRate, bool boost) {
     int value;
-    float multiplier = 1.5;
+    float multiplier = 2.5;
     if (boost) {
         value = (int) (speed + turnRate * speed * multiplier / 255.0);
     } else {
@@ -34,8 +34,6 @@ uint8_t calculateTurnRate(uint8_t speed, uint8_t turnRate, bool boost) {
     debugLog("Calculating turn rate: " + String(value) + ", speed: " + String(speed) + " input turn rate: " + turnRate);
     if (value > 255) {
         return 255;
-    } else if (value < 0) {
-        return 0;
     } else {
         return (uint8_t) value;
     }
@@ -71,9 +69,24 @@ void Motor::right(uint8_t speed, uint8_t turnRate) {
 #ifndef DISABLE_MOTOR
     resetMotors();
 
-    analogWrite(MOTOR_SPEED_RIGHT, calculateTurnRate(speed, turnRate, false));
+    uint8_t turnRateRight = calculateTurnRate(speed, turnRate, false);
+    uint8_t turnRateLeft = calculateTurnRate(speed, turnRate, true);
+
+    if (turnRateLeft >= 0) {
+        digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
+    } else {
+        digitalWrite(MOTOR_LEFT_BACKWARDS, HIGH);
+    }
+
+    if (turnRateRight >= 0) {
+        digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
+    } else {
+        digitalWrite(MOTOR_RIGHT_BACKWARDS, HIGH);
+    }
+
+    analogWrite(MOTOR_SPEED_RIGHT, abs(turnRateRight));
     //analogWrite(MOTOR_SPEED_RIGHT, 0);
-    analogWrite(MOTOR_SPEED_LEFT, calculateTurnRate(speed, turnRate, true));
+    analogWrite(MOTOR_SPEED_LEFT, abs(turnRateLeft));
 
     digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
     digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
@@ -87,12 +100,25 @@ void Motor::left(uint8_t speed, uint8_t turnRate) {
 #ifndef DISABLE_MOTOR
     resetMotors();
 
-    analogWrite(MOTOR_SPEED_LEFT, calculateTurnRate(speed, turnRate, false));
-    //analogWrite(MOTOR_SPEED_LEFT, 0);
-    analogWrite(MOTOR_SPEED_RIGHT, calculateTurnRate(speed, turnRate, true));
+    uint8_t turnRateLeft = calculateTurnRate(speed, turnRate, false);
+    uint8_t turnRateRight = calculateTurnRate(speed, turnRate, true);
 
-    digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
-    digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
+    if (turnRateLeft >= 0) {
+        digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
+    } else {
+        digitalWrite(MOTOR_LEFT_BACKWARDS, HIGH);
+    }
+
+    if (turnRateRight >= 0) {
+        digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
+    } else {
+        digitalWrite(MOTOR_RIGHT_BACKWARDS, HIGH);
+    }
+
+    analogWrite(MOTOR_SPEED_LEFT, abs(turnRateLeft));
+    //analogWrite(MOTOR_SPEED_LEFT, 0);
+    analogWrite(MOTOR_SPEED_RIGHT, abs(turnRateRight));
+
 #endif
 }
 

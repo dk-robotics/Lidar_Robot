@@ -51,7 +51,7 @@ void FormelSIT::calculateMoveDirection() {
             delay(1500);
         }
 
-        motor.tankTurn(50, step < MEASURE_POINTS / 2);
+        motor.tankTurn(80, step < MEASURE_POINTS / 2);
         if (!minDistanceStuckPrevious) {
             minDistanceStuckPrevious = true;
             minDistanceStuckTime = millis();
@@ -68,7 +68,7 @@ void FormelSIT::calculateMoveDirection() {
         debugLog("Found new longest distance, " + String(longestDistanceIndex));
 
         debugLog("Calling degree turn from FormelSIT");
-        motor.degreeTurn(50, longestDistanceIndex * 180 / ((float) MEASURE_POINTS - 1));
+        motor.degreeTurn(60, longestDistanceIndex * 180 / ((float) MEASURE_POINTS - 1));
 #ifdef DEBUG_LIDAR
         for (unsigned int i = 0; i < MEASURE_POINTS; i++) {
             if (i == longestDistanceIndex) {
